@@ -1,0 +1,33 @@
+version: '3.1'
+
+services:
+  mongo-db:
+    image: mongo:4.4.4
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./docker/data/mongo_db:/data/db
+    ports:
+      - 27095:27017
+    command: mongod
+  redis:
+    image: redis:6.2.1
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
+    ports:
+      - 6395:6379
+    volumes:
+      - ./docker/data/redis:/data
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    volumes:
+      - ./docker/data/rabbitmq/etc/:/etc/rabbitmq/
+      - ./docker/data/rabbitmq/data/:/var/lib/rabbitmq/
+      - ./docker/data/rabbitmq/logs/:/var/log/rabbitmq/
+    environment:
+      RABBITMQ_DEFAULT_USER: username
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - 5695:5672
+      - 15695:15672
